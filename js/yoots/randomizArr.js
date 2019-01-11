@@ -1,1 +1,0 @@
-module.exports = (arr) => arr.sort(() => Math.trunc(Math.random() * 3) - 1);

@@ -1,4 +1,4 @@
-[
+const verbs = [
   { spanish: 'comer', english: 'eat', reg: true },
   { spanish: 'llamar', english: 'call', reg: true },
   { spanish: 'mostrar', english: 'show', group: 3 },

@@ -1,4 +1,4 @@
-const verbs = [
+const VERBS = [
   { spanish: 'comer', english: 'eat', reg: true },
   { spanish: 'llamar', english: 'call', reg: true },
   { spanish: 'mostrar', english: 'show', group: 3 },
@@ -163,4 +163,6 @@ const verbs = [
   { spanish: 'cortar', english: 'cut', reg: true },
   { spanish: 'practicar', english: 'practice', reg: true },
   { spanish: 'traer', english: 'bring', group: 5, yo: 'traigo' }
-];
+]
+
+window.VERBS = VERBS.map(verb => ({...verb, english: verb.english.split('/')}));

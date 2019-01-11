@@ -1,5 +1,7 @@
 window.initGameState = { 
-  answer: null,
-  realAnswer: null,
-  question: null
+  question: {
+    aConfirm: null,
+    q: null,
+    a: null
+  }
 };

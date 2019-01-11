@@ -1,8 +1,9 @@
-const gameLoop = (state) => {
-  R.when(
-    yo.questionIsNil,
-    yo.newQuestion,
-  )(state);
+const gameLoop = state => {
+  R.cond([
+    [yo.questionIsNil, yo.newQuestion],
+    [yo.checkAnswer, yo.newQuestion],
+    [R.T, () => console.log(`nothing ran`)]
+  ])(state);
 };
 
 setInterval(() => {

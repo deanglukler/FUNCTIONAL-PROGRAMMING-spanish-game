@@ -1,9 +1,7 @@
 window.window.gs = initGameState;
-const updateGameState = nxtState => (window.gs = nxtState);
-// these functions will all take gameState as an argument
-const getQuestion = R.path(['question']);
-const getAnswer = R.path(['answer']);
-const getRealAnswer = R.path(['realAnswer']);
+
+const getQuestion = R.view(LENS.questionLens);
+const getAnswer = R.view(LENS.answerLens);
 
 const questionIsNil = R.pipe(
   getQuestion,
@@ -15,35 +13,76 @@ const answerIsNil = R.pipe(
   R.isNil
 );
 
-const questionLens = R.lensProp('question');
-const answerLens = R.lensProp('answer');
+//
+//
+//
 
-const createQuestion = () => 'this is the question';
+const setDOMQuestionText = state => {
+  document.getElementById('game-question').innerText = getQuestion(state);
+};
+
+const setInputValue = state => {
+  document.getElementById('game-input').value = R.either(
+    getAnswer,
+    R.always('')
+  )(state);
+};
+
+const updateDOM = (prvState, nxtState) => {
+  // update the question text only when it's changed.
+  R.unless(
+    s => R.equals(getQuestion(prvState), getQuestion(s)),
+    setDOMQuestionText
+  )(nxtState);
+
+  R.unless(s => R.equals(getAnswer(prvState), getAnswer(s)), setInputValue)(
+    nxtState
+  );
+};
+
+const updateGameState = nxtState => {
+  window.gs = R.mergeDeepRight(window.gs, nxtState);
+  console.log(window.gs);
+};
+
+const updateGameStateAndDOM = nxtState => {
+  const prvState = window.gs;
+  updateGameState(nxtState);
+  updateDOM(prvState, nxtState);
+};
+
+//
+//
+//
 
 window.yo = {
   answerIsNil,
   questionIsNil,
-  updateGameState,
-  pickRanVerb: verbs => {
-    if ((verbs || []).length === 0) {
-      return;
-    }
-    return verbs[Math.trunc(Math.random() * verbs.length)];
-  },
+  updateGameStateAndDOM,
   // return true or false
   shouldRunGameLoop: R.cond([
     [questionIsNil, R.T],
     [answerIsNil, R.F],
     [R.T, R.T]
   ]),
-  newQuestion: R.pipe(
-    R.set(questionLens, createQuestion()),
-    updateGameState
-  ),
-  // updateAnswer: (nxtAnswer) => window.gs = R.set(answerLens, nxtAnswer, window.gs)
+  newQuestion: state => {
+    const nxtQ = window.QNA.create();
+    R.pipe(
+      R.set(LENS.questionAndAnswerLens, nxtQ),
+      updateGameStateAndDOM
+    )(state);
+  },
   updateAnswer: (nxtAnswer, gameState) =>
     R.pipe(
-      R.set(answerLens, nxtAnswer),
-      updateGameState
-    )(gameState)
+      R.set(LENS.answerLens, nxtAnswer),
+      updateGameStateAndDOM
+    )(gameState),
+  clearAnswerInput: () => {
+    updateGameStateAndDOM({ question: { a: '' } });
+  },
+  checkAnswer: state => {
+    const aConfirm = R.view(window.LENS.answerConfirmLens)(state);
+    const a = R.view(window.LENS.answerLens)(state);
+    return (aConfirm || []).includes(a);
+  }
 };

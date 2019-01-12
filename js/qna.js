@@ -1,6 +1,5 @@
 // Questions and Answers
-// const v = window.VERBS.filter(ver => Object.keys(ver.preterite).length > 0 );
-const v = window.VERBS.filter(ver => R.path(['preterite', 'group'])(ver) === 4);
+const v = window.VERBS.filter(ver => Object.keys(ver.preterite).length > 0 );
 window.QNA = {};
 
 // must match the verbs data
@@ -147,7 +146,7 @@ const iregPreteriteConjQ = verb => {
 
   const chosenPronoun = pickRanConjPronoun(conjugations);
   return {
-    q: `Conjugate Preterite: ${chosenPronoun.pronoun} -> ${prettify(
+    q: `Conjugate Preterite: ${chosenPronoun.pronoun} __ | ${prettify(
       getSpa(verb)
     )}`,
     aConfirm: [chosenPronoun.conjugation],

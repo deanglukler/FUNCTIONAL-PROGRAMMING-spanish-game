@@ -8,7 +8,7 @@ const gameLoop = state => {
 
 setInterval(() => {
   gameLoop(window.gs);
-}, 500);
+}, 350);
 
 const gameInput = document.getElementById('game-input');
 document.addEventListener('input', e => yo.updateAnswer(e.target.value, gs));

@@ -689,7 +689,7 @@ const VERBS = [
       yo: 'fui a',
       tu: 'fuiste a',
       el: 'fue a',
-      noso: 'fuimos',
+      noso: 'fuimos a',
       ellos: 'fueron a',
     },
   },

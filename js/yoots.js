@@ -81,8 +81,8 @@ window.yo = {
     updateGameStateAndDOM({ question: { a: '' } });
   },
   checkAnswer: state => {
-    const aConfirm = R.view(window.LENS.answerConfirmLens)(state);
-    const a = R.view(window.LENS.answerLens)(state);
+    const aConfirm = R.view(LENS.answerConfirmLens)(state);
+    const a = R.view(LENS.answerLens)(state);
     return (aConfirm || []).includes(a);
   }
 };

@@ -639,7 +639,7 @@ const VERBS = [
     preterite: { group: 4 },
   },
   {
-    english: 'go up/climb',
+    english: 'go up/climb/ascend',
     spanish: 'subir',
     present: { reg: true },
     preterite: {},

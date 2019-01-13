@@ -2,6 +2,7 @@ window.window.gs = initGameState;
 
 const getQuestion = R.view(LENS.questionLens);
 const getAnswer = R.view(LENS.answerLens);
+const getReviewQuestions = R.view(LENS.reviewQuestionsLens);
 
 const questionIsNil = R.pipe(
   getQuestion,
@@ -27,6 +28,8 @@ const setInputValue = state => {
     R.always('')
   )(state);
 };
+
+const getNewQuestionFromNoWhereLand = () => window.QNA.create();
 
 const updateDOM = (prvState, nxtState) => {
   // update the question text only when it's changed.
@@ -63,12 +66,42 @@ window.yo = {
   shouldRunGameLoop: R.cond([
     [questionIsNil, R.T],
     [answerIsNil, R.F],
-    [R.T, R.T]
+    [R.T, R.T],
   ]),
   newQuestion: state => {
-    const nxtQ = window.QNA.create();
+    const shouldAskReviewQ = state =>
+      R.equals(0, R.modulo(R.view(LENS.questionCountLens)(state), 3));
+
+    const evolveQuestionRelatedState = R.ifElse(
+      shouldAskReviewQ,
+      state => {
+        const q = R.either(
+          () => R.head(getReviewQuestions(state)),
+          getNewQuestionFromNoWhereLand
+        )(null);
+
+        return R.pipe(
+          R.set(LENS.questionDataLens, q),
+          R.over(LENS.reviewQuestionsLens, R.drop(1))
+        )(state);
+      },
+      R.set(LENS.questionDataLens, getNewQuestionFromNoWhereLand())
+    );
+
+    const setAnswerToBlank = R.set(LENS.answerLens, '');
+
+    const setQuestionCount = R.over(LENS.questionCountLens, R.inc);
+
+    const setQuestionTimestamp = R.set(LENS.questionTimestampLens, Date.now());
+
+    const setQuestionAddedToReviewToFalse = R.over(LENS.questionAddedToReviewLens, R.F)
+
     R.pipe(
-      R.set(LENS.questionAndAnswerLens, nxtQ),
+      evolveQuestionRelatedState,
+      setAnswerToBlank,
+      setQuestionCount,
+      setQuestionTimestamp,
+      setQuestionAddedToReviewToFalse,
       updateGameStateAndDOM
     )(state);
   },
@@ -84,5 +117,14 @@ window.yo = {
     const aConfirm = R.view(LENS.answerConfirmLens)(state);
     const a = R.view(LENS.answerLens)(state);
     return (aConfirm || []).includes(a);
-  }
+  },
+  addQuestionToReviewList: state => {
+    const currentQuestion = R.view(LENS.questionDataLens)(state);
+    updateGameState(
+      R.pipe(
+        R.over(LENS.reviewQuestionsLens, R.append(currentQuestion)),
+        R.set(LENS.questionAddedToReviewLens, R.T)
+      )(state)
+    );
+  },
 };

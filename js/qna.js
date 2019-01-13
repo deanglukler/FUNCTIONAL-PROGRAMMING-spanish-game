@@ -1,5 +1,5 @@
 // Questions and Answers
-const v = window.VERBS.filter(ver => Object.keys(ver.preterite).length > 0 );
+const v = window.VERBS;
 window.QNA = {};
 
 // must match the verbs data
@@ -14,6 +14,8 @@ const PRETTY_PRONOUNS = {
 
 const getSpa = R.prop('spanish');
 const getEn = R.prop('english');
+const getVerbEnding = verb => getSpa(verb).slice(-2);
+const getSimpleVerbStem = verb => getSpa(verb).slice(0, -2);
 
 const ranArrElement = array => {
   if ((array || []).length === 0) {
@@ -22,17 +24,29 @@ const ranArrElement = array => {
   return array[Math.trunc(Math.random() * array.length)];
 };
 
-const defaulConjugationEndings = () => {
+const defaultConjugationEndings = () => {
   console.warn(
     'No endings supplied for this conjugation.. I hope the verbTenseData has all the conjugations'
   );
   return CONJ_PRONOUNS.map(() => 'x');
 };
 
+// note createConjugationObj will always override if pronoun is
+// supplied in the verbTenseData
+// ex..
+// present: {
+//   group: 1,
+//   yo: 'voy',
+//   tu: 'vas',
+//   el: 'va',
+//   noso: 'vamos',
+//   ellos: 'van',
+// }
+// In this case all the pronouns are specified and they will overrule
 const createConjugationObj = ({
   stem = 'xoxo',
   alteredStems = {},
-  endings = defaulConjugationEndings(),
+  endings = defaultConjugationEndings(),
   verbTenseData = {},
 }) =>
   CONJ_PRONOUNS.reduce((col, pronoun, index) => {
@@ -59,18 +73,24 @@ const checkForDefaultStemTenseData = R.curry((conjTense, verb) =>
   R.path([conjTense, 'stem'])(verb)
 );
 
-const replaceSecondEWithI = str => str.replace(/e([^e]*)$/, 'i' + '$1');
+const replaceSecondEWith = R.curry((rplc, str) =>
+  str.replace(/e([^e]*)$/, rplc + '$1')
+);
 
 //
 //
 
 window.QNA.create = () => {
   const randomVerb = ranArrElement(v);
-  return R.ifElse(
-    R.isNil,
-    () => console.warn('NO VERBS IN LIST!'),
-    iregPreteriteConjQ
-  )(randomVerb);
+  const possibleQuestionFunctions = [
+    translationQ,
+    preteriteConjQ,
+    presentConjQ,
+  ];
+  return R.cond([
+    [R.isNil, () => console.warn('NO VERBS IN LIST!')],
+    [R.T, ranArrElement(possibleQuestionFunctions)]
+  ])(randomVerb);
 };
 
 //
@@ -88,7 +108,103 @@ const translationQ = verb => {
 //
 //
 
+// PRESENT CONJUGATION QUESTIONS
+
+const regConjEndings = R.cond([
+  [R.equals('ar'), () => ['o', 'as', 'a', 'amos', 'an']],
+  [R.equals('er'), () => ['o', 'es', 'e', 'emos', 'en']],
+  [R.equals('ir'), () => ['o', 'es', 'e', 'imos', 'en']],
+  [
+    R.T,
+    () =>
+      console.warn(
+        'regConjEndings found verb without "ir" "er" or "ar" ending.'
+      ),
+  ],
+]);
+
+const presentConjSettings = (verb, overrides = {}) =>
+  R.mergeRight({
+    stem: getSimpleVerbStem(verb),
+    // nosotros will always use a simple stem in present tense
+    // ( that's why they are the same here, usually the stem will be overruled )
+    alteredStems: {
+      noso: getSimpleVerbStem(verb),
+    },
+    endings: regConjEndings(getVerbEnding(verb)),
+    verbTenseData: R.prop('present')(verb),
+  })(overrides);
+
+const createPresentRegConj = verb =>
+  createConjugationObj(presentConjSettings(verb));
+
+const createPresentGroup2Conj = verb =>
+  createConjugationObj(
+    presentConjSettings(verb, {
+      stem: replaceSecondEWith('ie')(getSimpleVerbStem(verb)),
+      alteredStems: {
+        noso: getSimpleVerbStem(verb),
+      },
+    })
+  );
+
+const createPresentGroup3Conj = verb =>
+  createConjugationObj(
+    presentConjSettings(verb, {
+      stem: getSimpleVerbStem(verb).replace('o', 'ue'),
+    })
+  );
+
+const createPresentGroup4Conj = verb =>
+  createConjugationObj(
+    presentConjSettings(verb, {
+      stem: replaceSecondEWith('i')(getSimpleVerbStem(verb)),
+    })
+  );
+
+const presentConjQ = verb => {
+  const getPresentGroup = R.path(['present', 'group']);
+  const groupIs = R.curry((group, verb) =>
+    R.equals(group, getPresentGroup(verb))
+  );
+
+  const conjugations = R.cond([
+    [groupIs(2), createPresentGroup2Conj],
+    [groupIs(3), createPresentGroup3Conj],
+    [groupIs(4), createPresentGroup4Conj],
+    [R.T, createPresentRegConj],
+  ])(verb);
+
+  const chosenPronoun = pickRanConjPronoun(conjugations);
+  return {
+    q: `Conjugate Present: ${chosenPronoun.pronoun} __ | ${prettify(
+      getSpa(verb)
+    )}`,
+    aConfirm: [chosenPronoun.conjugation],
+  };
+};
+
+//
+//
+
 // PRETERITE CONJUGATION QUESTIONS
+
+const createPreteriteRegularConj = verb => {
+  const stem = getSimpleVerbStem(verb);
+  const ending = getVerbEnding(verb);
+
+  const verbTenseData = R.prop('preterite')(verb);
+
+  return createConjugationObj({
+    stem,
+    verbTenseData,
+    endings: R.ifElse(
+      R.equals('ar'),
+      () => ['é', 'aste', 'ó', 'amos', 'aron'],
+      () => ['i', 'iste', 'ió', 'imos', 'ieron']
+    )(ending),
+  });
+};
 
 const createPreteriteGroup1Conj = verb => {
   const stem = R.path(['preterite', 'stem'])(verb);
@@ -119,7 +235,7 @@ const createPreteriteGroup4Conj = verb => {
     return spanish.slice(0, spanish.lastIndexOf('ir'));
   })(verb);
 
-  const alteredElandEllosStem = replaceSecondEWithI(stem);
+  const alteredElandEllosStem = replaceSecondEWith('i', stem);
   return createConjugationObj({
     stem,
     alteredStems: {
@@ -131,7 +247,7 @@ const createPreteriteGroup4Conj = verb => {
   });
 };
 
-const iregPreteriteConjQ = verb => {
+const preteriteConjQ = verb => {
   const getPreteriteGroup = R.path(['preterite', 'group']);
   const groupIs = R.curry((group, verb) =>
     R.equals(group, getPreteriteGroup(verb))
@@ -141,7 +257,7 @@ const iregPreteriteConjQ = verb => {
     [groupIs(1), createPreteriteGroup1Conj],
     [groupIs(3), createPreteriteGroup3Conj],
     [groupIs(4), createPreteriteGroup4Conj],
-    [R.T, () => createConjugationObj({ verbTenseData: verb.preterite })],
+    [R.T, createPreteriteRegularConj],
   ])(verb);
 
   const chosenPronoun = pickRanConjPronoun(conjugations);

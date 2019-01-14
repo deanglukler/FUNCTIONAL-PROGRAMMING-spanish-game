@@ -1,5 +1,3 @@
-window.gs = window.initGameState;
-
 const getQuestion = R.view(LENS.questionLens);
 const getAnswer = R.view(LENS.answerLens);
 const getReviewQuestions = R.view(LENS.reviewQuestionsLens);
@@ -49,6 +47,7 @@ const updateGameState = nxtState => {
 };
 
 const updateGameStateAndDOM = nxtState => {
+  debugger
   const prvState = window.gs;
   updateGameState(nxtState);
   updateDOM(prvState, nxtState);

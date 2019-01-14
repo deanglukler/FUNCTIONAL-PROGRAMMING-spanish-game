@@ -60,6 +60,9 @@ const createConjugationObj = ({
 
 const prettify = str => str.charAt(0).toUpperCase() + str.slice(1);
 
+const conjugationQString = (tense, pronoun, verb) =>
+  `Conjugate ${tense}: "${verb}"  | ${pronoun} ___`;
+
 // yo, tu, el .. etc..
 const pickRanConjPronoun = conjugatedVerb => {
   const pronoun = ranArrElement(CONJ_PRONOUNS);
@@ -89,7 +92,7 @@ window.QNA.create = () => {
   ];
   return R.cond([
     [R.isNil, () => console.warn('NO VERBS IN LIST!')],
-    [R.T, ranArrElement(possibleQuestionFunctions)]
+    [R.T, ranArrElement(possibleQuestionFunctions)],
   ])(randomVerb);
 };
 
@@ -100,7 +103,7 @@ window.QNA.create = () => {
 
 const translationQ = verb => {
   return {
-    q: `translate this verb: ${prettify(getSpa(verb))}`,
+    q: `Translate this verb: ${prettify(getSpa(verb))}`,
     aConfirm: [...getEn(verb)],
   };
 };
@@ -177,9 +180,11 @@ const presentConjQ = verb => {
 
   const chosenPronoun = pickRanConjPronoun(conjugations);
   return {
-    q: `Conjugate Present: ${chosenPronoun.pronoun} __ | ${prettify(
-      getSpa(verb)
-    )}`,
+    q: conjugationQString(
+      'Present',
+      chosenPronoun.pronoun,
+      prettify(getSpa(verb))
+    ),
     aConfirm: [chosenPronoun.conjugation],
   };
 };
@@ -201,7 +206,7 @@ const createPreteriteRegularConj = verb => {
     endings: R.ifElse(
       R.equals('ar'),
       () => ['é', 'aste', 'ó', 'amos', 'aron'],
-      () => ['i', 'iste', 'ió', 'imos', 'ieron']
+      () => ['í', 'iste', 'ió', 'imos', 'ieron']
     )(ending),
   });
 };
@@ -262,9 +267,9 @@ const preteriteConjQ = verb => {
 
   const chosenPronoun = pickRanConjPronoun(conjugations);
   return {
-    q: `Conjugate Preterite: ${chosenPronoun.pronoun} __ | ${prettify(
+    q: conjugationQString('Preterite', chosenPronoun.pronoun, prettify(
       getSpa(verb)
-    )}`,
+    )),
     aConfirm: [chosenPronoun.conjugation],
   };
 };

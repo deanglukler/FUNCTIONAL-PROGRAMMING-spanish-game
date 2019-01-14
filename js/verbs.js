@@ -19,7 +19,13 @@ const VERBS = [
     english: 'believe',
     spanish: 'creer',
     present: { reg: true },
-    preterite: {},
+    preterite: {
+      yo: 'crei',
+      tu: 'creiste',
+      el: 'creyó',
+      noso: 'creimos',
+      ellos: 'creyeron',
+    },
   },
   {
     english: 'remember',
@@ -28,7 +34,7 @@ const VERBS = [
     preterite: {},
   },
   {
-    english: 'come over',
+    english: 'come',
     spanish: 'venir',
     present: {
       group: 1,
@@ -216,7 +222,18 @@ const VERBS = [
     preterite: {},
   },
   { english: 'sing', spanish: 'contar', present: { reg: true }, preterite: {} },
-  { english: 'read', spanish: 'leer', present: { reg: true }, preterite: {} },
+  {
+    english: 'read',
+    spanish: 'leer',
+    present: { reg: true },
+    preterite: {
+      yo: 'lei',
+      tu: 'leiste',
+      el: 'leyó',
+      noso: 'leimos',
+      ellos: 'leyeron',
+    },
+  },
   { english: 'cost', spanish: 'costar', present: { group: 3 }, preterite: {} },
   {
     english: 'permit',
@@ -306,7 +323,7 @@ const VERBS = [
   },
   { english: 'pay', spanish: 'pagar', present: { reg: true }, preterite: {} },
   {
-    english: 'do',
+    english: 'do/make',
     spanish: 'hacer',
     present: { group: 5, yo: 'hago' },
     preterite: {
@@ -328,7 +345,7 @@ const VERBS = [
     preterite: {},
   },
   {
-    english: 'know knowledge',
+    english: 'know/meet',
     spanish: 'conocer',
     present: { group: 5, yo: 'conozco' },
     preterite: {},
@@ -536,7 +553,7 @@ const VERBS = [
     preterite: {},
   },
   {
-    english: 'happen/to spend time',
+    english: 'happen/pass/to spend time',
     spanish: 'pasar',
     present: { reg: true },
     preterite: {},
@@ -621,7 +638,7 @@ const VERBS = [
   },
   { english: 'open', spanish: 'abrir', present: { reg: true }, preterite: {} },
   {
-    english: 'shout',
+    english: 'shout/yell',
     spanish: 'gritar',
     present: { reg: true },
     preterite: {},

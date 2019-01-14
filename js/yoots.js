@@ -70,7 +70,10 @@ window.yo = {
   ]),
   newQuestion: state => {
     const shouldAskReviewQ = state =>
-      R.equals(0, R.modulo(R.view(LENS.questionCountLens)(state), 3));
+      R.or(
+        R.equals(0, R.modulo(R.view(LENS.questionCountLens)(state), 3)),
+        R.lt(5, R.length(R.view(LENS.questionCountLens)(state)))
+      );
 
     const evolveQuestionRelatedState = R.ifElse(
       shouldAskReviewQ,
@@ -94,7 +97,10 @@ window.yo = {
 
     const setQuestionTimestamp = R.set(LENS.questionTimestampLens, Date.now());
 
-    const setQuestionAddedToReviewToFalse = R.over(LENS.questionAddedToReviewLens, R.F)
+    const setQuestionAddedToReviewToFalse = R.over(
+      LENS.questionAddedToReviewLens,
+      R.F
+    );
 
     R.pipe(
       evolveQuestionRelatedState,

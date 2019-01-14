@@ -1,4 +1,4 @@
-window.window.gs = initGameState;
+window.gs = window.initGameState;
 
 const getQuestion = R.view(LENS.questionLens);
 const getAnswer = R.view(LENS.answerLens);
@@ -71,7 +71,12 @@ window.yo = {
   newQuestion: state => {
     const shouldAskReviewQ = state =>
       R.or(
-        R.equals(0, R.modulo(R.view(LENS.questionCountLens)(state), 3)),
+        R.and(
+          R.equals(0, R.modulo(R.view(LENS.questionCountLens)(state), 3)),
+          /* don't ask review until there's at least two questions */
+          /* this will avoid repeated questions */
+          R.gt(1, R.length(R.view(LENS.questionCountLens)(state)))
+        ),
         R.lt(5, R.length(R.view(LENS.questionCountLens)(state)))
       );
 

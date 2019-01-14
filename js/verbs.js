@@ -454,7 +454,7 @@ const VERBS = [
     preterite: {},
   },
   {
-    english: 'ask for/demand/require',
+    english: 'ask for/demand/order/require',
     spanish: 'pedir',
     present: { group: 4 },
     preterite: {},
@@ -564,7 +564,7 @@ const VERBS = [
     present: { group: 2 },
     preterite: {},
   },
-  { english: 'ride', spanish: 'montar', present: { reg: true }, preterite: {} },
+  { english: 'ride/put together', spanish: 'montar', present: { reg: true }, preterite: {} },
   { english: 'touch', spanish: 'tocar', present: { reg: true }, preterite: {} },
   {
     english: 'say',
@@ -723,7 +723,7 @@ const VERBS = [
     preterite: {},
   },
   { english: 'swim', spanish: 'nadar', present: { reg: true }, preterite: {} },
-  { english: 'wish', spanish: 'desear', present: { reg: true }, preterite: {} },
+  { english: 'wish/want', spanish: 'desear', present: { reg: true }, preterite: {} },
   { english: 'wash', spanish: 'lavar', present: { reg: true }, preterite: {} },
   {
     english: 'work',

@@ -13,7 +13,6 @@
       present: true,
       preterite: true,
       imperfect: true,
-      'general-vocab': true,
     },
   };
 

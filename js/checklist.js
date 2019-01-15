@@ -1,5 +1,5 @@
 (() => {
-  const CL_OPTIONS = ['present', 'preterite', 'imperfect', 'general-vocab'];
+  const CL_OPTIONS = ['present', 'preterite', 'imperfect'];
   const gameChecklistEl = document.getElementById('game-checklist');
 
   const checklistLIInnerHTML = ({ name }) => `

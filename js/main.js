@@ -3,7 +3,7 @@ const gameLoop = state => {
     state =>
       R.and(
         R.lt(
-          9000, /* amount of milliseconds before q becomes review */
+          9000 /* amount of milliseconds before q becomes review */,
           R.subtract(Date.now(), R.view(LENS.questionTimestampLens)(state))
         ),
         R.not(R.view(LENS.questionAddedToReviewLens)(state))
@@ -22,4 +22,6 @@ setInterval(() => {
   gameLoop(window.gs);
 }, 350);
 
-document.addEventListener('input', e => yo.updateAnswer(e.target.value, gs));
+document
+  .getElementById('game-input')
+  .addEventListener('input', e => yo.updateAnswer(e.target.value, gs));

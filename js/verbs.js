@@ -12,6 +12,17 @@ const changeOrder = verbs => {
 };
 
 const VERBS = [
+  {
+    english: 'see/watch',
+    spanish: 'ver',
+    imperfect: {
+      yo: 'veía',
+      tu: 'veías',
+      el: 'veía',
+      noso: 'veíamos',
+      ellos: 'veían'
+    }
+  },
   { english: 'eat', spanish: 'comer', present: { reg: true }, preterite: {} },
   { english: 'call', spanish: 'llamar', present: { reg: true }, preterite: {} },
   { english: 'show', spanish: 'mostrar', present: { group: 3 }, preterite: {} },
@@ -690,6 +701,13 @@ const VERBS = [
       noso: 'fuimos',
       ellos: 'fueron',
     },
+    imperfect: {
+      yo: 'era',
+      tu: 'eras',
+      el: 'era',
+      noso: 'éramos',
+      ellos: 'eran'
+    }
   },
   {
     english: 'go',
@@ -709,6 +727,13 @@ const VERBS = [
       noso: 'fuimos a',
       ellos: 'fueron a',
     },
+    imperfect: {
+      yo: 'iba',
+      tu: 'ibas',
+      el: 'iba',
+      noso: 'íbamos',
+      ellos: 'iban',
+    }
   },
   {
     english: 'question',

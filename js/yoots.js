@@ -47,7 +47,6 @@ const updateGameState = nxtState => {
 };
 
 const updateGameStateAndDOM = nxtState => {
-  debugger
   const prvState = window.gs;
   updateGameState(nxtState);
   updateDOM(prvState, nxtState);

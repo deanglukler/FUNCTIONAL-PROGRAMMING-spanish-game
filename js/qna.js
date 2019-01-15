@@ -85,14 +85,34 @@ const replaceSecondEWith = R.curry((rplc, str) =>
 
 window.QNA.create = () => {
   const randomVerb = ranArrElement(v);
-  const possibleQuestionFunctions = [
+  const state = gs;
+
+  // questions that aren't controlled by checkboxes
+  const baseQuestions = [
     translationQ,
-    preteriteConjQ,
-    presentConjQ,
   ];
+
+  const addQ = R.curry((checkboxState, fn, list) =>
+    R.when(
+      R.always(checkboxState),
+      R.append(fn)
+    )(list)
+  );
+
+  const getCheckboxState = R.partial(
+    (state, checkboxName) => R.path(['checklist', checkboxName])(state),
+    [state]
+  );
+
+  const filteredQuestions = R.pipe(
+    addQ(getCheckboxState('present'), presentConjQ),
+    addQ(getCheckboxState('preterite'), preteriteConjQ),
+    addQ(getCheckboxState('imperfect'), imperfectConjQ)
+  )(baseQuestions);
+
   return R.cond([
     [R.isNil, () => console.warn('NO VERBS IN LIST!')],
-    [R.T, ranArrElement(possibleQuestionFunctions)],
+    [R.T, ranArrElement(filteredQuestions)],
   ])(randomVerb);
 };
 
@@ -110,6 +130,42 @@ const translationQ = verb => {
 
 //
 //
+
+// IMPERFECTO CONJUGATION QUESTIONS
+
+const impConjEndings = R.cond([
+  [R.equals('ar'), () => ['aba', 'abas', 'aba', 'ábamos', 'aban']],
+  [
+    ending => R.either(R.equals('er')(ending), R.equals('ir')(ending)),
+    () => ['ía', 'ías', 'ía', 'íamos', 'ían'],
+  ],
+  [
+    R.T,
+    () =>
+      console.warn(
+        'impConjEndings found verb without "ir" "er" or "ar" ending.'
+      ),
+  ],
+]);
+
+const imperfectConjQ = verb => {
+  const conjugations = createConjugationObj({
+    stem: getSimpleVerbStem(verb),
+    endings: impConjEndings(getVerbEnding(verb)),
+    verbTenseData: R.prop('imperfect')(verb),
+  });
+
+  const chosenPronoun = pickRanConjPronoun(conjugations);
+
+  return {
+    q: conjugationQString(
+      'Imperfect',
+      chosenPronoun.pronoun,
+      prettify(getSpa(verb))
+    ),
+    aConfirm: [chosenPronoun.conjugation],
+  };
+};
 
 // PRESENT CONJUGATION QUESTIONS
 
@@ -267,9 +323,11 @@ const preteriteConjQ = verb => {
 
   const chosenPronoun = pickRanConjPronoun(conjugations);
   return {
-    q: conjugationQString('Preterite', chosenPronoun.pronoun, prettify(
-      getSpa(verb)
-    )),
+    q: conjugationQString(
+      'Preterite',
+      chosenPronoun.pronoun,
+      prettify(getSpa(verb))
+    ),
     aConfirm: [chosenPronoun.conjugation],
   };
 };

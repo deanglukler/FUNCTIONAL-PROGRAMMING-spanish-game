@@ -13,6 +13,169 @@ const changeOrder = verbs => {
 
 const VERBS = [
   {
+    english: 'sit down',
+    spanish: 'sentarse',
+  },
+  {
+    english: 'dare',
+    spanish: 'atreverse',
+  },
+  {
+    english: 'regret',
+    spanish: 'arrepentirse',
+  },
+  {
+    english: 'approach',
+    spanish: 'acercarse',
+  },
+  {
+    english: 'move residence',
+    spanish: 'mudarse',
+  },
+  {
+    english: 'take with you/carry away',
+    spanish: 'llavarse',
+  },
+  {
+    english: 'to remember',
+    spanish: 'acordarse',
+  },
+  {
+    english: 'be bored',
+    spanish: 'aburrirse',
+  },
+  {
+    english: 'get dressed',
+    spanish: 'vestirse',
+  },
+  {
+    english: 'take off',
+    spanish: 'quitarse',
+  },
+  {
+    english: 'dry off',
+    spanish: 'secarse',
+  },
+  {
+    english: 'comb',
+    spanish: 'peinarse',
+  },
+  {
+    english: 'put on makeup',
+    spanish: 'maquillarse',
+  },
+  {
+    english: 'get up/stand up',
+    spanish: 'levantarse',
+  },
+  {
+    english: 'take a bath',
+    spanish: 'bañarse',
+  },
+  {
+    english: 'shave',
+    spanish: 'afeitarse',
+  },
+  {
+    english: 'go to bed',
+    spanish: 'acostarse',
+  },
+  {
+    english: 'go',
+    spanish: 'irse',
+    present: {
+      group: 1,
+      yo: 'voy',
+      tu: 'vas',
+      el: 'va',
+      noso: 'vamos',
+      ellos: 'van',
+    },
+    preterite: {
+      yo: 'fui a',
+      tu: 'fuiste a',
+      el: 'fue a',
+      noso: 'fuimos a',
+      ellos: 'fueron a',
+    },
+    imperfect: {
+      yo: 'iba',
+      tu: 'ibas',
+      el: 'iba',
+      noso: 'íbamos',
+      ellos: 'iban',
+    }
+  },
+  {
+    english: 'sleep',
+    spanish: 'dormirse',
+  },
+  {
+    english: 'wash',
+    spanish: 'lavarse',
+  },
+  {
+    english: 'call',
+    spanish: 'llamarse',
+  },
+  {
+    english: 'become',
+    spanish: 'convertirse (en)',
+  },
+  {
+    english: 'realize',
+    spanish: 'darse cuenta',
+  },
+  {
+    english: 'find out',
+    spanish: 'enterarse',
+  },
+  {
+    english: 'take notice of',
+    spanish: 'fijarse',
+  },
+  {
+    english: 'die of',
+    spanish: 'morirse',
+  },
+  {
+    english: 'forget about',
+    spanish: 'olvidarse',
+  },
+  {
+    english: 'worry about',
+    spanish: 'preocuparse',
+  },
+  {
+    english: 'complain about',
+    spanish: 'quejarse',
+  },
+  {
+    english: 'be surprised about',
+    spanish: 'sorprenderse',
+  },
+  {
+    english: 'shower',
+    spanish: 'ducharse',
+  },
+  {
+    english: 'brush',
+    spanish: 'cepillarse',
+  },
+  {
+    english: 'wake up',
+    spanish: 'despertarse',
+  },
+  {
+    english: 'wear',
+    spanish: 'ponerse',
+    present: { group: 5, yo: 'pongo' },
+    preterite: {
+      group: 1,
+      stem: 'pus',
+    },
+  },
+  {
     english: 'see/watch',
     spanish: 'ver',
     imperfect: {
@@ -302,7 +465,6 @@ const VERBS = [
     present: { group: 2 },
     preterite: {},
   },
-  { english: 'stay', spanish: 'quedar', present: { reg: true }, preterite: {} },
   {
     english: 'put',
     spanish: 'poner',

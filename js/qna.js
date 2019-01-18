@@ -11,8 +11,19 @@ const PRETTY_PRONOUNS = {
   noso: 'Nosotros',
   ellos: 'Ustedes/Ellos/Ellas',
 };
+const REFLEXIVES = {
+  yo: 'me',
+  tu: 'te',
+  el: 'se',
+  nose: 'nos',
+  ellos: 'se',
+};
 
 const getSpa = R.prop('spanish');
+const getOriginalSpanishOrSpa = R.either(
+  R.prop('originalVerb'),
+  R.prop('spanish')
+);
 const getEn = R.prop('english');
 const getVerbEnding = verb => getSpa(verb).slice(-2);
 const getSimpleVerbStem = verb => getSpa(verb).slice(0, -2);
@@ -69,6 +80,22 @@ const pickRanConjPronoun = conjugatedVerb => {
   return {
     conjugation: conjugatedVerb[pronoun],
     pronoun: PRETTY_PRONOUNS[pronoun],
+    reflexiveDirective: REFLEXIVES[pronoun],
+  };
+};
+
+const formatQuestionData = (verb, conjType, conjugations) => {
+  const chosenPronoun = pickRanConjPronoun(conjugations);
+
+  return {
+    verb,
+    reflexive: chosenPronoun.reflexiveDirective,
+    q: conjugationQString(
+      conjType,
+      chosenPronoun.pronoun,
+      prettify(getOriginalSpanishOrSpa(verb))
+    ),
+    aConfirm: [chosenPronoun.conjugation],
   };
 };
 
@@ -80,6 +107,27 @@ const replaceSecondEWith = R.curry((rplc, str) =>
   str.replace(/e([^e]*)$/, rplc + '$1')
 );
 
+const endsWithSE = str => str.endsWith('se');
+
+const addReflexive = R.curry((question, ans) => [
+  R.join(' ', [R.prop('reflexive')(question), ans]),
+]);
+
+const formatReflexiveQuestionVerb = verb => {
+  const nxt = getSpa(verb).slice(0, -2);
+  return R.mergeLeft({
+    originalVerb: getSpa(verb),
+    spanish: nxt,
+  })(verb);
+};
+
+const formatReflexiveAnswer = question => {
+  const nxt = R.evolve({
+    aConfirm: addReflexive(question),
+  })(question);
+  return nxt;
+};
+
 //
 //
 
@@ -88,15 +136,10 @@ window.QNA.create = () => {
   const state = gs;
 
   // questions that aren't controlled by checkboxes
-  const baseQuestions = [
-    translationQ,
-  ];
+  const baseQuestions = [translationQ];
 
   const addQ = R.curry((checkboxState, fn, list) =>
-    R.when(
-      R.always(checkboxState),
-      R.append(fn)
-    )(list)
+    R.when(R.always(checkboxState), R.append(fn))(list)
   );
 
   const getCheckboxState = R.partial(
@@ -110,9 +153,19 @@ window.QNA.create = () => {
     addQ(getCheckboxState('imperfect'), imperfectConjQ)
   )(baseQuestions);
 
+  const question = ranArrElement(filteredQuestions);
+
+  const isReflexive = endsWithSE(R.prop('spanish')(randomVerb));
+
   return R.cond([
     [R.isNil, () => console.warn('NO VERBS IN LIST!')],
-    [R.T, ranArrElement(filteredQuestions)],
+    [() => R.equals(translationQ, question), question],
+    [
+      () => isReflexive,
+      verb =>
+        formatReflexiveAnswer(question(formatReflexiveQuestionVerb(verb))),
+    ],
+    [R.T, question],
   ])(randomVerb);
 };
 
@@ -155,16 +208,7 @@ const imperfectConjQ = verb => {
     verbTenseData: R.prop('imperfect')(verb),
   });
 
-  const chosenPronoun = pickRanConjPronoun(conjugations);
-
-  return {
-    q: conjugationQString(
-      'Imperfect',
-      chosenPronoun.pronoun,
-      prettify(getSpa(verb))
-    ),
-    aConfirm: [chosenPronoun.conjugation],
-  };
+  return formatQuestionData(verb, 'Imperfect', conjugations);
 };
 
 // PRESENT CONJUGATION QUESTIONS
@@ -234,15 +278,7 @@ const presentConjQ = verb => {
     [R.T, createPresentRegConj],
   ])(verb);
 
-  const chosenPronoun = pickRanConjPronoun(conjugations);
-  return {
-    q: conjugationQString(
-      'Present',
-      chosenPronoun.pronoun,
-      prettify(getSpa(verb))
-    ),
-    aConfirm: [chosenPronoun.conjugation],
-  };
+  return formatQuestionData(verb, 'Present', conjugations);
 };
 
 //
@@ -321,13 +357,5 @@ const preteriteConjQ = verb => {
     [R.T, createPreteriteRegularConj],
   ])(verb);
 
-  const chosenPronoun = pickRanConjPronoun(conjugations);
-  return {
-    q: conjugationQString(
-      'Preterite',
-      chosenPronoun.pronoun,
-      prettify(getSpa(verb))
-    ),
-    aConfirm: [chosenPronoun.conjugation],
-  };
+  return formatQuestionData(verb, 'Preterite', conjugations);
 };

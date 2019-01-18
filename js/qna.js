@@ -1,4 +1,3 @@
-// Questions and Answers
 const v = window.VERBS;
 window.QNA = {};
 
@@ -18,6 +17,12 @@ const REFLEXIVES = {
   nose: 'nos',
   ellos: 'se',
 };
+
+// ↑↑↑↑↑↑↑↑↑
+// CONSTANTS
+//
+// HELPER FNs
+// ↓↓↓↓↓↓↓↓↓
 
 const getSpa = R.prop('spanish');
 const getOriginalSpanishOrSpa = R.either(
@@ -59,13 +64,19 @@ const createConjugationObj = ({
   alteredStems = {},
   endings = defaultConjugationEndings(),
   verbTenseData = {},
+  preVerbs = {},
 }) =>
   CONJ_PRONOUNS.reduce((col, pronoun, index) => {
     return {
       ...col,
-      [pronoun]:
-        verbTenseData[pronoun] ||
-        `${alteredStems[pronoun] || stem}${endings[index]}`,
+      [pronoun]: R.trim(
+        R.join(' ', [
+          preVerbs[pronoun] || '',
+          verbTenseData[pronoun] ||
+            verbTenseData['todo'] ||
+            `${alteredStems[pronoun] || stem}${endings[index]}`,
+        ])
+      ),
     };
   }, {});
 
@@ -128,8 +139,11 @@ const formatReflexiveAnswer = question => {
   return nxt;
 };
 
+// ↑↑↑↑↑↑↑↑↑
+// HELPER FNs
 //
-//
+// MAIN QUESTION FN
+// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 window.QNA.create = () => {
   const randomVerb = ranArrElement(v);
@@ -150,7 +164,8 @@ window.QNA.create = () => {
   const filteredQuestions = R.pipe(
     addQ(getCheckboxState('present'), presentConjQ),
     addQ(getCheckboxState('preterite'), preteriteConjQ),
-    addQ(getCheckboxState('imperfect'), imperfectConjQ)
+    addQ(getCheckboxState('imperfect'), imperfectConjQ),
+    addQ(getCheckboxState('present-perfect'), presentPerConjQ)
   )(baseQuestions);
 
   const question = ranArrElement(filteredQuestions);
@@ -169,8 +184,11 @@ window.QNA.create = () => {
   ])(randomVerb);
 };
 
+// ↑↑↑↑↑↑↑↑↑
+// MAIN QUESTION FN
 //
-//
+// QUESTION FNS
+// ↓↓↓↓↓↓↓↓↓↓↓↓
 
 // BASIC TRANSLATION QUESTIONS
 
@@ -183,33 +201,6 @@ const translationQ = verb => {
 
 //
 //
-
-// IMPERFECTO CONJUGATION QUESTIONS
-
-const impConjEndings = R.cond([
-  [R.equals('ar'), () => ['aba', 'abas', 'aba', 'ábamos', 'aban']],
-  [
-    ending => R.either(R.equals('er')(ending), R.equals('ir')(ending)),
-    () => ['ía', 'ías', 'ía', 'íamos', 'ían'],
-  ],
-  [
-    R.T,
-    () =>
-      console.warn(
-        'impConjEndings found verb without "ir" "er" or "ar" ending.'
-      ),
-  ],
-]);
-
-const imperfectConjQ = verb => {
-  const conjugations = createConjugationObj({
-    stem: getSimpleVerbStem(verb),
-    endings: impConjEndings(getVerbEnding(verb)),
-    verbTenseData: R.prop('imperfect')(verb),
-  });
-
-  return formatQuestionData(verb, 'Imperfect', conjugations);
-};
 
 // PRESENT CONJUGATION QUESTIONS
 
@@ -358,4 +349,71 @@ const preteriteConjQ = verb => {
   ])(verb);
 
   return formatQuestionData(verb, 'Preterite', conjugations);
+};
+
+//
+//
+
+// IMPERFECTO CONJUGATION QUESTIONS
+
+const impConjEndings = R.cond([
+  [R.equals('ar'), () => ['aba', 'abas', 'aba', 'ábamos', 'aban']],
+  [
+    ending => R.either(R.equals('er')(ending), R.equals('ir')(ending)),
+    () => ['ía', 'ías', 'ía', 'íamos', 'ían'],
+  ],
+  [
+    R.T,
+    () =>
+      console.warn(
+        'impConjEndings found verb without "ir" "er" or "ar" ending.'
+      ),
+  ],
+]);
+
+const imperfectConjQ = verb => {
+  const conjugations = createConjugationObj({
+    stem: getSimpleVerbStem(verb),
+    endings: impConjEndings(getVerbEnding(verb)),
+    verbTenseData: R.prop('imperfect')(verb),
+  });
+
+  return formatQuestionData(verb, 'Imperfect', conjugations);
+};
+
+//
+//
+
+// PRESENTE PERFECTO CONJUGATION QUESTIONS
+
+const presentPerConjEndings = R.cond([
+  [R.equals('ar'), () => ['ado', 'ado', 'ado', 'ado', 'ado']],
+  [
+    ending => R.either(R.equals('er')(ending), R.equals('ir')(ending)),
+    () => ['ido', 'ido', 'ido', 'ido', 'ido'],
+  ],
+  [
+    R.T,
+    () =>
+      console.warn(
+        'presentPerfect found verb without "ir" "er" or "ar" ending.'
+      ),
+  ],
+]);
+
+const presentPerConjQ = verb => {
+  const conjugations = createConjugationObj({
+    stem: getSimpleVerbStem(verb),
+    endings: presentPerConjEndings(getVerbEnding(verb)),
+    preVerbs: {
+      yo: 'he',
+      tu: 'has',
+      el: 'ha',
+      noso: 'hemos',
+      ellos: 'han',
+    },
+    verbTenseData: R.prop('presentPer')(verb),
+  });
+
+  return formatQuestionData(verb, 'Present Perfect', conjugations);
 };

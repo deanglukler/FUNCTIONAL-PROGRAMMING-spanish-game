@@ -13,6 +13,7 @@
       present: true,
       preterite: true,
       imperfect: true,
+      ['present-perfect']: true,
     },
   };
 

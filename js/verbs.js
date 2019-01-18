@@ -104,7 +104,7 @@ const VERBS = [
       el: 'iba',
       noso: 'íbamos',
       ellos: 'iban',
-    }
+    },
   },
   {
     english: 'sleep',
@@ -120,7 +120,7 @@ const VERBS = [
   },
   {
     english: 'become',
-    spanish: 'convertirse (en)',
+    spanish: 'convertirse',
   },
   {
     english: 'realize',
@@ -183,8 +183,11 @@ const VERBS = [
       tu: 'veías',
       el: 'veía',
       noso: 'veíamos',
-      ellos: 'veían'
-    }
+      ellos: 'veían',
+    },
+    presentPer: {
+      todo: 'visto',
+    },
   },
   { english: 'eat', spanish: 'comer', present: { reg: true }, preterite: {} },
   { english: 'call', spanish: 'llamar', present: { reg: true }, preterite: {} },
@@ -282,7 +285,15 @@ const VERBS = [
     preterite: {},
   },
   { english: 'run', spanish: 'correr', present: { reg: true }, preterite: {} },
-  { english: 'die', spanish: 'morir', present: { group: 3 }, preterite: {} },
+  {
+    english: 'die',
+    spanish: 'morir',
+    present: { group: 3 },
+    preterite: {},
+    presentPer: {
+      todo: 'muerto',
+    },
+  },
   {
     english: 'serve',
     spanish: 'servir',
@@ -310,6 +321,13 @@ const VERBS = [
     spanish: 'prometer',
     present: { reg: true },
     preterite: {},
+  },
+  {
+    english: 'rip/break',
+    spanish: 'romper',
+    presentPer: {
+      todo: 'roto',
+    },
   },
   {
     english: 'travel',
@@ -352,6 +370,9 @@ const VERBS = [
     spanish: 'escribir',
     present: { reg: true },
     preterite: {},
+    presentPer: {
+      todo: 'escrito',
+    },
   },
   {
     english: 'speak',
@@ -395,7 +416,7 @@ const VERBS = [
     present: { reg: true },
     preterite: {},
   },
-  { english: 'sing', spanish: 'contar', present: { reg: true }, preterite: {} },
+  { english: 'sing', spanish: 'cantar', present: { reg: true }, preterite: {} },
   {
     english: 'read',
     spanish: 'leer',
@@ -473,6 +494,9 @@ const VERBS = [
       group: 1,
       stem: 'pus',
     },
+    presentPer: {
+      todo: 'puesto',
+    },
   },
   {
     english: 'make a sound',
@@ -480,7 +504,12 @@ const VERBS = [
     present: { group: 3 },
     preterite: {},
   },
-  { english: 'count', spanish: 'contar', present: { group: 3 }, preterite: {} },
+  {
+    english: 'count/tell',
+    spanish: 'contar',
+    present: { group: 3 },
+    preterite: {},
+  },
   { english: 'fly', spanish: 'volar', present: { group: 3 }, preterite: {} },
   {
     english: 'leave',
@@ -503,6 +532,9 @@ const VERBS = [
       group: 1,
       stem: 'hic',
       el: 'hizo',
+    },
+    presentPer: {
+      todo: 'hecho',
     },
   },
   {
@@ -574,18 +606,27 @@ const VERBS = [
     spanish: 'volver',
     present: { group: 3 },
     preterite: {},
+    presentPer: {
+      todo: 'vuelto',
+    },
   },
   {
     english: 'resolve',
     spanish: 'resolver',
     present: { group: 3 },
     preterite: {},
+    presentPer: {
+      todo: 'resuelto',
+    },
   },
   {
     english: 'cover',
     spanish: 'cubrir',
     present: { reg: true },
     preterite: {},
+    presentPer: {
+      todo: 'cubierto',
+    },
   },
   {
     english: 'fix',
@@ -737,7 +778,12 @@ const VERBS = [
     present: { group: 2 },
     preterite: {},
   },
-  { english: 'ride/put together', spanish: 'montar', present: { reg: true }, preterite: {} },
+  {
+    english: 'ride/put together',
+    spanish: 'montar',
+    present: { reg: true },
+    preterite: {},
+  },
   { english: 'touch', spanish: 'tocar', present: { reg: true }, preterite: {} },
   {
     english: 'say',
@@ -757,6 +803,9 @@ const VERBS = [
       el: 'dijo',
       noso: 'dijimos',
       ellos: 'dijeron',
+    },
+    presentPer: {
+      todo: 'dicho',
     },
   },
   {
@@ -809,7 +858,15 @@ const VERBS = [
     present: { group: 2 },
     preterite: {},
   },
-  { english: 'open', spanish: 'abrir', present: { reg: true }, preterite: {} },
+  {
+    english: 'open',
+    spanish: 'abrir',
+    present: { reg: true },
+    preterite: {},
+    presentPer: {
+      todo: 'abierto',
+    },
+  },
   {
     english: 'shout/yell',
     spanish: 'gritar',
@@ -868,8 +925,8 @@ const VERBS = [
       tu: 'eras',
       el: 'era',
       noso: 'éramos',
-      ellos: 'eran'
-    }
+      ellos: 'eran',
+    },
   },
   {
     english: 'go',
@@ -895,7 +952,7 @@ const VERBS = [
       el: 'iba',
       noso: 'íbamos',
       ellos: 'iban',
-    }
+    },
   },
   {
     english: 'question',
@@ -904,13 +961,25 @@ const VERBS = [
     preterite: {},
   },
   {
+    english: 'discover/uncover',
+    spanish: 'descubrir',
+    presentPer: {
+      todo: 'descubierto',
+    },
+  },
+  {
     english: 'descend/go down',
     spanish: 'bajar',
     present: { reg: true },
     preterite: {},
   },
   { english: 'swim', spanish: 'nadar', present: { reg: true }, preterite: {} },
-  { english: 'wish/want', spanish: 'desear', present: { reg: true }, preterite: {} },
+  {
+    english: 'wish/want',
+    spanish: 'desear',
+    present: { reg: true },
+    preterite: {},
+  },
   { english: 'wash', spanish: 'lavar', present: { reg: true }, preterite: {} },
   {
     english: 'work',

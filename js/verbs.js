@@ -330,6 +330,10 @@ const VERBS = [
     },
   },
   {
+    spanish: 'guardar',
+    english: 'put away/keep',
+  },
+  {
     english: 'travel',
     spanish: 'viajar',
     present: { reg: true },

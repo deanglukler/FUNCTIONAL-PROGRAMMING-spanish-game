@@ -1,4 +1,5 @@
-const v = window.VERBS;
+// const v = window.VERBS;
+const v = window.VERBS.map(ver => ver.spanish === 'peinarse');
 window.QNA = {};
 
 // must match the verbs data
@@ -14,7 +15,7 @@ const REFLEXIVES = {
   yo: 'me',
   tu: 'te',
   el: 'se',
-  nose: 'nos',
+  noso: 'nos',
   ellos: 'se',
 };
 
@@ -125,6 +126,7 @@ const addReflexive = R.curry((question, ans) => [
 ]);
 
 const formatReflexiveQuestionVerb = verb => {
+  // remove the se
   const nxt = getSpa(verb).slice(0, -2);
   return R.mergeLeft({
     originalVerb: getSpa(verb),

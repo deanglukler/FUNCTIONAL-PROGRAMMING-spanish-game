@@ -1,5 +1,4 @@
-// const v = window.VERBS;
-const v = window.VERBS.map(ver => ver.spanish === 'peinarse');
+const v = window.VERBS;
 window.QNA = {};
 
 // must match the verbs data

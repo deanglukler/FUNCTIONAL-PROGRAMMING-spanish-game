@@ -75,7 +75,7 @@ window.yo = {
           /* this will avoid repeated questions */
           R.gt(1, R.length(R.view(LENS.questionCountLens)(state)))
         ),
-        R.lt(5, R.length(R.view(LENS.questionCountLens)(state)))
+        R.lt(5, R.length(R.view(LENS.reviewQuestionsLens)(state)))
       );
 
     const evolveQuestionRelatedState = R.ifElse(
